@@ -13,6 +13,7 @@ from docx import Document
 
 app = Flask(__name__)
 
+index_dir = "faiss_index"
 vector_store = None
 
 # Initialize models
@@ -23,6 +24,10 @@ llm = HuggingFacePipeline.from_model_id(
     device=0 if os.environ.get("USE_GPU") else -1,
 )
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+
+# Load existing index if it exists
+if os.path.exists(index_dir):
+    vector_store = FAISS.load_local(index_dir, embeddings)
 
 
 def extract_text(file_path):
@@ -50,15 +55,19 @@ def index():
 def upload():
     global vector_store
     texts = []
+    os.makedirs("uploads", exist_ok=True)
     for f in request.files.getlist("files"):
         path = os.path.join("uploads", f.filename)
-        os.makedirs("uploads", exist_ok=True)
         f.save(path)
         text = extract_text(path)
         docs = text_splitter.create_documents([text])
         texts.extend(docs)
     if texts:
-        vector_store = FAISS.from_documents(texts, embeddings)
+        if vector_store is None:
+            vector_store = FAISS.from_documents(texts, embeddings)
+        else:
+            vector_store.add_documents(texts)
+        vector_store.save_local(index_dir)
     return redirect("/")
 
 

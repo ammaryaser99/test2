@@ -1,19 +1,19 @@
-# Document Question Answering Web App
+# AI Assistant for Electronic Maintenance and Troubleshooting
 
-This project demonstrates how to build a simple website that lets you upload PDF, Word, or Excel files and ask questions about their contents using an open source language model.
+This example demonstrates a private web system that lets you upload technical documents (PDF, Word, Excel) and ask questions about them. The goal is to quickly search manuals and diagrams instead of reading them manually.
+
+The project uses open‑source models with [LangChain](https://github.com/langchain-ai/langchain) to build a small document QA service.
 
 ## Requirements
 
 - Python 3.11+
-- Packages in `requirements.txt`
+- Packages listed in `requirements.txt`
 
-Install them with:
+Install dependencies with:
 
 ```bash
 pip install -r requirements.txt
 ```
-
-The first time you run this it will download open-source models (e.g., `flan-t5-small`).
 
 ## Running the Web App
 
@@ -21,15 +21,16 @@ The first time you run this it will download open-source models (e.g., `flan-t5-
 python app.py
 ```
 
-Then open `http://localhost:5000` in your browser. Upload documents and submit questions.
+Open `http://localhost:5000` in your browser. Upload one or more documents and then type questions about their contents.
+
+Uploaded files are stored locally in the `uploads/` folder. A FAISS index is written to `faiss_index/` so your data is preserved if you restart the server.
 
 ## Mobile App Idea
 
-You can create a simple mobile app (React Native, Flutter, or any framework) that sends file uploads and questions to the same Flask backend. The backend responds with the answer in JSON or HTML.
+A simple mobile client (React Native, Flutter, etc.) can send file uploads and questions to this Flask backend over HTTP. The server responds with answers in JSON or HTML so the same logic works on desktop or mobile.
 
-For production, you might deploy the Flask server and call it from your mobile app via HTTP.
+For production deployments consider hosting the Flask app on a cloud service and adding HTTPS and authentication.
 
 ## Notes
 
-- This is a minimal example for local experimentation. For large documents or heavy usage, consider using a more robust vector store and model hosting solution.
-- Google NotebookLM is another option if you prefer a managed solution from Google.
+This is a minimal proof of concept aimed at small‑scale use. For many users or large documents you may need more robust storage and a heavier language model.
