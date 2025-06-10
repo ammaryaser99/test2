@@ -1,0 +1,8 @@
+flask
+langchain
+faiss-cpu
+sentence-transformers
+transformers
+pypdf
+python-docx
+pandas
